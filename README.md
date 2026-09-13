@@ -13,7 +13,8 @@ This is a static site: one `index.html` (HTML/CSS/JS, no build step) plus one op
 ├── vercel.json        deployment config (headers, clean URLs)
 ├── package.json        local dev convenience only — no build step needed
 ├── api/
-│   └── chat.js        optional serverless proxy for the AI features (see below)
+│   ├── chat.js        optional serverless proxy for the AI features (see below)
+│   └── img.js         same-origin proxy for Wikimedia Commons destination photos (see below)
 ├── .gitignore
 ├── LICENSE
 └── README.md
@@ -45,22 +46,32 @@ Every future `git push` to `main` will auto-redeploy.
 
 ## Important: the AI features need one extra step
 
-Two things on this site call Claude:
-- **Ask V** search — quietly asks Claude in the background to write nicer wording for the top 3 matches your search already found (the matching itself is a local, deterministic engine and always works, with or without this).
-- **The V chat bubble** — a real back-and-forth conversation with Claude.
+Two things on this site call an AI model:
+- **Ask V** search — quietly asks the AI in the background to write nicer wording for the top 3 matches your search already found (the matching itself is a local, deterministic engine and always works, with or without this).
+- **The V chat bubble** — a real back-and-forth conversation.
 
-Both work automatically while you're editing inside Claude's own tools, because that environment authenticates the call for you. **Once deployed to Vercel, that automatic authentication doesn't exist** — so out of the box, right after deploying, Ask V will still work perfectly (it falls back to its own matching logic), but the AI wording polish and the chat bubble will show a "can't reach live chat right now" message.
+Out of the box, right after deploying, Ask V will still work perfectly (it falls back to its own matching logic), but the AI wording polish and the chat bubble will show a "can't reach live chat right now" message until you add at least one API key below.
+
+`api/chat.js` is a small serverless function that tries up to **4 free AI providers in order** and automatically moves to the next one if a provider is rate-limited or out of quota — so the chat keeps working even if one provider's free tier runs dry for the day. You only need to set up one of these to get started; add more for automatic fallback.
+
+| Provider | Env var | Get a key | Notes |
+|---|---|---|---|
+| Groq | `GROQ_API_KEY` | [console.groq.com](https://console.groq.com/keys) | Fast, generous free rate limits, no card |
+| Gemini | `GEMINI_API_KEY` | [aistudio.google.com/apikey](https://aistudio.google.com/apikey) | Free tier, no card |
+| OpenRouter | `OPENROUTER_API_KEY` | [openrouter.ai/keys](https://openrouter.ai/keys) | Only `:free`-suffixed models are free — the free catalog rotates, check [openrouter.ai/models?max_price=0](https://openrouter.ai/models?max_price=0) if it ever 404s |
+| Cerebras | `CEREBRAS_API_KEY` | [cloud.cerebras.ai](https://cloud.cerebras.ai/) | Free developer tier, daily token limits |
 
 To turn them on:
 
-1. Get an API key from [console.anthropic.com](https://console.anthropic.com/) (this requires setting up billing on your Anthropic account — API usage is pay-as-you-go, separate from any Claude subscription).
-2. In your Vercel project: **Settings → Environment Variables** → add:
-   - Name: `ANTHROPIC_API_KEY`
-   - Value: your key
-   - Environment: Production (and Preview/Development if you want it there too)
+1. Sign up (free, no card) with as many of the providers above as you'd like fallback coverage for, and grab an API key from each.
+2. In your Vercel project: **Settings → Environment Variables** → add one entry per key (e.g. Name: `GROQ_API_KEY`, Value: your key, Environment: Production).
 3. Redeploy (Vercel → Deployments → ⋯ → Redeploy, or just push a new commit).
 
-The `api/chat.js` file is a small serverless function that receives requests from the browser, attaches your API key server-side, and forwards them to Anthropic — your key is never exposed to visitors' browsers. If you skip this step entirely, the site remains fully functional; it just runs on the local matching engine only, which is genuinely most of what the site does anyway.
+Your keys are only ever used server-side inside `api/chat.js` — never sent to visitors' browsers. If you skip this step entirely, the site remains fully functional; it just runs on the local matching engine only, which is genuinely most of what the site does anyway.
+
+## About the image proxy (`api/img.js`)
+
+Destination photos come from Wikimedia Commons, but the site doesn't link to `upload.wikimedia.org` directly — it requests them from its own `/api/img` route, which fetches from Wikimedia server-side and passes the image back. This exists because some ad blockers and privacy/DNS filters silently drop direct requests to Wikimedia's media domain (treating it as third-party tracker-adjacent content), which shows up as broken-image icons even though the rest of the site works fine. Routing through your own domain avoids that — no setup needed, it works automatically on any deployment.
 
 ## Local development
 
@@ -71,7 +82,7 @@ npm install -g vercel
 vercel dev
 ```
 
-This runs the site plus the serverless function locally at `http://localhost:3000`. Add `ANTHROPIC_API_KEY` to a local `.env` file (or `vercel env pull`) to test the AI features locally too.
+This runs the site plus the serverless function locally at `http://localhost:3000`. Add whichever provider key(s) you're using (see the table above) to a local `.env` file (or `vercel env pull`) to test the AI features locally too.
 
 ## Custom domain
 

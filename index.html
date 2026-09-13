@@ -613,7 +613,7 @@ footer{background:var(--ink); color:#C8C0A6; padding:70px 0 40px; border-top:1px
 <!-- ============ HERO ============ -->
 <section class="hero" id="ask">
   <div class="hero-bg">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Old_Bagan,_Myanmar,_Bagan_plains_at_sunset.jpg/1900px-Old_Bagan,_Myanmar,_Bagan_plains_at_sunset.jpg" alt="Temples of Bagan at sunset">
+    <img src="/api/img?file=Old_Bagan%2C_Myanmar%2C_Bagan_plains_at_sunset.jpg&w=1900" alt="Temples of Bagan at sunset">
   </div>
   <div class="hero-inner">
     <div class="hero-eyebrow">Personal AI travel agent for Myanmar</div>
@@ -860,7 +860,7 @@ footer{background:var(--ink); color:#C8C0A6; padding:70px 0 40px; border-top:1px
       </div>
     </div>
     <div class="reveal" style="position:relative;">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Mount_Popa_(15096121779).jpg/900px-Mount_Popa_(15096121779).jpg" style="border-radius:10px; box-shadow:var(--shadow);" alt="Taung Kalat monastery on Mount Popa">
+      <img src="/api/img?file=Mount_Popa_(15096121779).jpg&w=900" style="border-radius:10px; box-shadow:var(--shadow);" alt="Taung Kalat monastery on Mount Popa">
       <div style="position:absolute; bottom:-20px; left:-20px; background:var(--surface); border:1px solid var(--line); padding:16px 20px; border-radius:10px; box-shadow:var(--shadow); max-width:230px;">
         <div class="mono" style="font-size:10.5px; letter-spacing:.08em; color:var(--accent); text-transform:uppercase;">V's note</div>
         <div style="font-size:13.5px; margin-top:6px; color:var(--text-dim);">"Taung Kalat gets busy by 10am — go at sunrise and you'll have the 777 steps mostly to yourself."</div>
@@ -946,56 +946,17 @@ footer{background:var(--ink); color:#C8C0A6; padding:70px 0 40px; border-top:1px
 
 <script>
 /* ============ DATA ============ */
-/* Direct upload.wikimedia.org thumbnail paths (bypasses the Special:FilePath
-   redirect, which some sandboxed/embedded viewers fail to follow for <img> tags).
-   Hash prefixes are the standard Wikimedia MD5(filename) directory scheme. */
-const WC_HASH = {
-  'Old_Bagan,_Myanmar,_Bagan_plains_at_sunset.jpg':'6/6c',
-  'Bagan_Temple.jpg':'6/66',
-  'Inle_Lake,_evening.JPG':'d/da',
-  'A_pagoda_on_the_Inle_Lake_in_Shan_State.jpg':'1/14',
-  'Kyaut_Ka_Latt_Pagoda.jpg':'0/06',
-  'Kyauk_Kalap_2.jpg':'a/a9',
-  'Arakan_Mrauk_U_Temple_Rakhine.jpg':'4/47',
-  'Shan_Hills,_Myanmar,_Pine_trees_and_rice_paddies_over_Shan_hills_in_rural_remote_Myanmar.jpg':'d/db',
-  'Interior_of_Drawing_Room_-_Shan_Palace_-_Outside_Hsipaw_-_Myanmar_(Burma)_(12224923095).jpg':'8/88',
-  'Taung_Kwe_Pagoda_2.jpg':'c/ce',
-  'Mount_Popa_(15096121779).jpg':'f/f6',
-  '20200217_112000_Mount_Popa_Mandalay_Region_Myanmar_anagoria.JPG':'5/5b',
-  'Indawgyi_(cropped).JPG':'d/d0',
-  'Mount_Kyaiktiyo_(the_Golden_Rock)_21.jpg':'8/82',
-  'Ngapali_beach_and_surrounding_area,_Rakhine_State_07.jpg':'3/31',
-  'Buddha_statues_in_Pindaya_(3508385698).jpg':'f/f6',
-  'Kyaikthanlan_Pagoda.jpg':'9/9e',
-  'BE_Waterfall,_Pyin_Oo_Lwin,_Mandalay.jpg':'c/cd',
-  'U_Bein_Bridge,_Mandalay,_Myanmar.jpg':'2/26',
-  'Fisherman_life_in_Myeik.jpg':'b/b5',
-  'The_Shwemawdaw_Pagoda_(15354947282).jpg':'2/2b',
-  'Sagaing,_Myanmar.jpg':'4/45',
-  'Golden_stupas_in_Bodhi_Tataung_(5090943218).jpg':'3/38',
-  'Yokesone_Monastery,_Salay,_built_in_1882.jpg':'1/1e',
-  'Uppatasanti_Pagoda.jpg':'d/d5',
-  'Maungmagan_Beach,_Dawei_11.jpg':'4/45',
-  'Shwedagon_Pagoda,_Sunset,_Yangon,_Myanmar.jpg':'d/d9',
-  'Mahamuni_Buddha_Pagoda.jpg':'f/fe',
-  'Kuthodaw_Pagoda_Mandalay.jpg':'5/5e',
-  'Shwezigon.jpg':'4/4f',
-  'Kyauktan_Ye_Le_Pagoda.jpg':'5/5d',
-  'Panorama_of_mandalay_from_mandalay_hill.jpg':'a/a5',
-  'Shittaung_Pagoda,_Mrauk_U_-_0002.jpg':'8/83',
-  'Myanmar_Kyaiktiyo_Pagoda_Goldener_Fels.JPG':'c/c3',
-  'Kalaw_Market_2021_November.jpg':'d/dd',
-  'Ngapali_Sunset_(Rakhine_State,_Myanmar).jpg':'a/ad',
-  'Bagan,_Myanmar,_Panorama_of_Bagan_as_seen_from_the_Minyeingon_Temple.jpg':'f/f6',
-  "Entrance_to_Saddar_Cave_-_Near_H'pa-an_-_Myanmar_(Burma)_(11956053616).jpg":'5/5a',
-  "Reclining_Buddha_(World's_Largest)_-_Win_Sein_Taw_Ya.jpg":'1/1a',
-  'Chit_Thu_Myar_Island_Ngwe_Saung_Beach.jpg':'1/17'
-};
-const WC = (name, w) => {
-  const hash = WC_HASH[name];
-  const width = w || 1200;
-  return `https://upload.wikimedia.org/wikipedia/commons/thumb/${hash}/${name}/${width}px-${name}`;
-};
+/* Images are served through /api/img (a same-origin proxy to Wikimedia
+   Commons) instead of linking straight to upload.wikimedia.org. Direct
+   cross-origin hotlinks to that domain get silently dropped by some ad
+   blockers / privacy-DNS filters that flag it as third-party media, even
+   though Wikimedia itself permits hotlinking freely. Routing the request
+   through your own domain sidesteps that, since the browser only ever
+   talks to the site it's already on — the proxy does the actual Wikimedia
+   fetch server-side. This also means we no longer need to hand-maintain a
+   table of MD5 hash prefixes: the proxy resolves each file's real location
+   for you via Wikimedia's own Special:FilePath redirect. */
+const WC = (name, w) => `/api/img?file=${encodeURIComponent(name)}&w=${w || 1200}`;
 
 const destinations = [
   {
@@ -2122,11 +2083,14 @@ async function tryAIEnhance(query, currentTop){
     }));
     const systemPrompt = `You are V, an expert Myanmar travel agent for Veridel. A traveler typed a request, and a scoring engine already selected these 3 destinations as the best matches -- your only job is to write a short, warm, specific reason (1 sentence) for EACH one, connecting it to what the traveler asked for. Do not suggest different destinations. Respond with ONLY raw JSON, no markdown: {"reasons":[{"id":"<id>","reason":"..."}]}. Only use facts given to you -- never invent details.`;
     const controller = new AbortController();
-    const timeoutId = setTimeout(()=>controller.abort(), 15000);
+    // Longer than before: the backend now tries up to 4 providers in
+    // sequence if earlier ones are rate-limited/out of quota, which can
+    // take a bit longer than a single call did.
+    const timeoutId = setTimeout(()=>controller.abort(), 30000);
     const response = await fetch("/api/chat", {
       method: "POST", headers: { "Content-Type": "application/json" }, signal: controller.signal,
       body: JSON.stringify({
-        model: "claude-sonnet-4-6", max_tokens: 800, system: systemPrompt,
+        max_tokens: 800, system: systemPrompt,
         messages: [{ role:"user", content: `Traveler request: "${query.slice(0,300)}"\n\nSelected destinations:\n${JSON.stringify(shortlistData)}` }]
       })
     });
@@ -2415,11 +2379,11 @@ Destination catalog:
 ${JSON.stringify(catalog)}`;
 
     const controller = new AbortController();
-    const timeoutId = setTimeout(()=>controller.abort(), 20000);
+    const timeoutId = setTimeout(()=>controller.abort(), 40000);
     const response = await fetch("/api/chat", {
       method: "POST", headers: { "Content-Type": "application/json" }, signal: controller.signal,
       body: JSON.stringify({
-        model: "claude-sonnet-4-6", max_tokens: 700, system: systemPrompt,
+        max_tokens: 700, system: systemPrompt,
         messages: chatHistory.slice(-10).map(m => ({role:m.role, content:m.content}))
       })
     });
@@ -2433,7 +2397,7 @@ ${JSON.stringify(catalog)}`;
   } catch(err){
     console.warn('V chat unavailable:', err);
     hideChatTyping();
-    addChatMessage('assistant', "I can't reach live chat right now — this deployment may not have an ANTHROPIC_API_KEY configured yet (see the project README), or the connection dropped. In the meantime, the \"Ask V\" search bar up top works fully offline and can still match you to a destination.");
+    addChatMessage('assistant', "I can't reach live chat right now — this deployment may not have any AI provider keys configured yet (see the project README), or the connection dropped. In the meantime, the \"Ask V\" search bar up top works fully offline and can still match you to a destination.");
   } finally {
     document.getElementById('chatSend').disabled = false;
     chatInFlight = false;
