@@ -2,7 +2,6 @@
   "name": "veridel",
   "version": "1.0.0",
   "private": true,
-  "type": "module",
   "description": "Veridel — an AI-assisted field guide to Myanmar's lightly-visited destinations.",
   "scripts": {
     "dev": "npx serve . -l 3000"

@@ -1918,8 +1918,14 @@ themeToggle.addEventListener('click', () => {
   html.setAttribute('data-theme', cur === 'dark' ? 'light' : 'dark');
 });
 
-/* ============ SHORTLIST (in-memory) ============ */
-let shortlist = new Set();
+/* ============ SHORTLIST (autosaved) ============ */
+/* Seeded from travelerProfile.saved (localStorage) so a returning visitor's
+   saved destinations show up as "Saved" immediately, instead of resetting
+   to an empty shortlist on every reload while the underlying profile data
+   quietly still remembered them. toggleSave() below already persists every
+   change via recordProfileEvent -> saveTravelerProfile, so no separate
+   save button or "saving..." step is needed — it's automatic. */
+let shortlist = new Set(travelerProfile.saved);
 function updateShortlistUI(){
   document.getElementById('shortlistCount').textContent = shortlist.size + ' saved';
   document.querySelectorAll('.btn-ghost.save-btn').forEach(btn=>{

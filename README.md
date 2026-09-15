@@ -58,7 +58,7 @@ Out of the box, right after deploying, Ask V will still work perfectly (it falls
 |---|---|---|---|
 | Groq | `GROQ_API_KEY` | [console.groq.com](https://console.groq.com/keys) | Fast, generous free rate limits, no card |
 | Gemini | `GEMINI_API_KEY` | [aistudio.google.com/apikey](https://aistudio.google.com/apikey) | Free tier, no card |
-| OpenRouter | `OPENROUTER_API_KEY` | [openrouter.ai/keys](https://openrouter.ai/keys) | Only `:free`-suffixed models are free — the free catalog rotates, check [openrouter.ai/models?max_price=0](https://openrouter.ai/models?max_price=0) if it ever 404s |
+| OpenRouter | `OPENROUTER_API_KEY` | [openrouter.ai/keys](https://openrouter.ai/keys) | Free, no card |
 | Cerebras | `CEREBRAS_API_KEY` | [cloud.cerebras.ai](https://cloud.cerebras.ai/) | Free developer tier, daily token limits |
 
 To turn them on:
@@ -68,6 +68,17 @@ To turn them on:
 3. Redeploy (Vercel → Deployments → ⋯ → Redeploy, or just push a new commit).
 
 Your keys are only ever used server-side inside `api/chat.js` — never sent to visitors' browsers. If you skip this step entirely, the site remains fully functional; it just runs on the local matching engine only, which is genuinely most of what the site does anyway.
+
+**A heads-up about free models:** providers change and retire their free-tier model names fairly often — sometimes with only a few weeks' notice. If chat suddenly stops working on a deployment that was working before, that's the most likely cause. Each provider's model name can be overridden without touching code:
+
+| Env var | Overrides |
+|---|---|
+| `GROQ_MODEL` | Groq's model (default `openai/gpt-oss-120b`) |
+| `GEMINI_MODEL` | Gemini's model (default `gemini-flash-latest`, a Google-maintained alias that tracks their current model) |
+| `OPENROUTER_MODEL` | OpenRouter's model (default `openrouter/free`, their own router that auto-picks a currently-free model) |
+| `CEREBRAS_MODEL` | Cerebras's model (default `gpt-oss-120b`) |
+
+If chat breaks, check the provider's own docs/console for their current model list, set the matching env var, and redeploy — no code changes needed.
 
 ## About the image proxy (`api/img.js`)
 
